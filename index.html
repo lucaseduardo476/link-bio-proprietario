@@ -17,9 +17,9 @@
    Não é preciso mexer em nada abaixo deste bloco.
 
    Dicas:
-   - Fotos dos imóveis vendidos: formato retrato 4:5, como no feed do
-     Instagram (ex.: 720x900 ou 1080x1350), em WebP ou JPG, até ~150 KB cada.
-     Pode ser um caminho local ("fotos/ap1-sala.webp") ou uma URL.
+   - Fotos dos imóveis vendidos: 1 foto por imóvel, formato paisagem 4:3
+     (ex.: 960x720), em WebP ou JPG, até ~150 KB cada.
+     Pode ser um caminho local ("fotos/ap1-fachada.webp") ou uma URL.
    - Para destacar uma palavra com "marca-texto", coloque-a entre *asteriscos*.
    - Redes sociais: deixe "" (vazio) para esconder o ícone (no WhatsApp, use false).
    - IMPORTANTE: os resultados (dias para vender, números em destaque) devem
@@ -68,12 +68,13 @@ const CONFIG = {
   },
 
   vendidos: {
-    rotulo: "Imóveis que já vendi",
+    rotulo: "Últimos imóveis vendidos",
     selo: "Vendido",                       // selo sobre as fotos
     botao: "Quero um resultado assim",
     // true = mostra também o preço pelo qual o imóvel foi vendido.
     // Deixe false se o proprietário não autorizou divulgar o valor de venda.
     mostrarPrecoVenda: false,
+    // Os 3 últimos imóveis vendidos, do mais recente para o mais antigo
     imoveis: [
       {
         tipo: "Apartamento",
@@ -83,12 +84,7 @@ const CONFIG = {
         precoVenda: "R$ 820 mil",          // só aparece se mostrarPrecoVenda = true
         diasParaVender: 45,                // dado real  [trocar]
         resumo: "o apartamento no Jardins", // vai na mensagem: "Vi que você vendeu o apartamento no Jardins em 45 dias..."
-        fotos: [
-          "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=720&h=900&q=60&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=720&h=900&q=60&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=720&h=900&q=60&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=720&h=900&q=60&auto=format&fit=crop"
-        ]
+        foto: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=960&h=720&q=60&auto=format&fit=crop"
       },
       {
         tipo: "Casa em condomínio",
@@ -98,12 +94,7 @@ const CONFIG = {
         precoVenda: "R$ 1,8 mi",
         diasParaVender: 62,
         resumo: "a casa em Alphaville",
-        fotos: [
-          "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=720&h=900&q=60&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=720&h=900&q=60&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=720&h=900&q=60&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=720&h=900&q=60&auto=format&fit=crop"
-        ]
+        foto: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=960&h=720&q=60&auto=format&fit=crop"
       },
       {
         tipo: "Studio",
@@ -113,12 +104,7 @@ const CONFIG = {
         precoVenda: "R$ 505 mil",
         diasParaVender: 28,
         resumo: "o studio na Vila Madalena",
-        fotos: [
-          "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=720&h=900&q=60&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=720&h=900&q=60&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=720&h=900&q=60&auto=format&fit=crop",
-          "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=720&h=900&q=60&auto=format&fit=crop"
-        ]
+        foto: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=960&h=720&q=60&auto=format&fit=crop"
       }
     ]
   },
@@ -321,21 +307,12 @@ const CONFIG = {
   .wpp-topo .i-wpp { color: var(--whatsapp); width: 1.3em; height: 1.3em; }
 
   /* ---------- 2. Imóveis vendidos ---------- */
-  .carrossel { position: relative; }
-  .trilho {
-    position: relative;
-    display: flex; gap: 10px;
-    overflow-x: auto; overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    border-radius: var(--raio);
-  }
-  .trilho::-webkit-scrollbar { display: none; }
+  .vendidos { display: grid; gap: 14px; }
+  .vendido { overflow: hidden; }
   .foto {
-    position: relative; flex: 0 0 100%;
-    aspect-ratio: 4 / 5;  /* formato do feed do Instagram */
-    scroll-snap-align: center; scroll-snap-stop: always;
-    border-radius: var(--raio); overflow: hidden;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
     background: var(--superficie);
   }
   .foto img { width: 100%; height: 100%; object-fit: cover; }
@@ -355,10 +332,10 @@ const CONFIG = {
     box-shadow: 0 6px 18px -6px rgba(0,0,0,.6);
   }
   .chip-vendido svg { width: 15px; height: 15px; stroke-width: 3; }
-  /* Faixa translúcida com o resumo do imóvel (no máximo 1/4 da foto) */
+  /* Faixa translúcida com o resumo do imóvel */
   .foto-faixa {
     position: absolute; z-index: 1; left: 0; right: 0; bottom: 0;
-    max-height: 25%; overflow: hidden;
+    overflow: hidden;
     display: flex; flex-direction: column; justify-content: center; gap: 4px;
     padding: 9px 14px;
     background: linear-gradient(180deg, rgba(8,8,8,.35), rgba(8,8,8,.68));
@@ -374,36 +351,10 @@ const CONFIG = {
   .faixa-specs span { display: inline-flex; align-items: center; gap: 5px; }
   .faixa-specs svg { width: 14px; height: 14px; color: var(--destaque); }
 
-  .seta {
-    position: absolute; top: 50%; z-index: 2; translate: 0 -50%;
-    width: 44px; height: 44px; display: none; place-items: center;
-    border-radius: 50%; border: 0; cursor: pointer;
-    background: rgba(10,10,10,.6); color: #fff; backdrop-filter: blur(6px);
-  }
-  .seta-ant { left: 12px; } .seta-prox { right: 12px; }
-  .seta:disabled { opacity: 0; pointer-events: none; }
-  @media (hover: hover) and (pointer: fine) { .seta { display: grid; } }
-
-  .indicadores { display: flex; justify-content: center; align-items: center; gap: 14px; margin: 14px 0 0; padding: 0; list-style: none; }
-  .grupo { display: flex; gap: 5px; padding: 6px 4px; border-radius: 99px; }
-  .ponto {
-    width: 7px; height: 7px; padding: 0; border: 0; border-radius: 99px; cursor: pointer;
-    background: var(--borda); transition: width .25s ease, background-color .25s ease;
-  }
-  .grupo.ativo .ponto { background: color-mix(in srgb, var(--destaque) 40%, var(--borda)); }
-  .ponto.ativo { width: 22px; background: var(--destaque) !important; }
-
-  .imovel { margin-top: 14px; padding: 12px 14px 14px; }
-  .imovel-conteudo {
-    display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    margin-bottom: 12px; color: var(--texto-suave); font-size: 14px;
-    transition: opacity .22s ease, transform .22s ease;
-  }
-  .imovel-conteudo.trocando { opacity: 0; transform: translateY(6px); }
-  .imovel-local { display: flex; align-items: center; gap: 6px; min-width: 0; margin: 0; }
+  .vendido-rodape { padding: 12px 14px 14px; }
+  .imovel-local { display: flex; align-items: center; gap: 6px; min-width: 0; margin: 0 0 12px; color: var(--texto-suave); font-size: 14px; }
   .imovel-local span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .imovel-local svg { color: var(--destaque); }
-  .contador { flex: none; font-size: 13px; font-weight: 500; }
 
   /* ---------- 3. Avaliação gratuita ---------- */
   .avaliacao {
@@ -576,16 +527,7 @@ const CONFIG = {
 
   <section aria-labelledby="rot-vendidos">
     <h2 class="rotulo" id="rot-vendidos"></h2>
-    <div class="carrossel">
-      <div class="trilho" id="trilho" tabindex="0" aria-roledescription="carrossel" aria-label="Fotos dos imóveis vendidos"></div>
-      <button class="seta seta-ant" id="seta-ant" aria-label="Foto anterior"></button>
-      <button class="seta seta-prox" id="seta-prox" aria-label="Próxima foto"></button>
-    </div>
-    <ul class="indicadores" id="indicadores" aria-label="Posição no carrossel"></ul>
-    <article class="cartao imovel" aria-live="polite">
-      <div class="imovel-conteudo" id="imovel"></div>
-      <a class="btn btn-principal" id="btn-imovel" target="_blank" rel="noopener"></a>
-    </article>
+    <div class="vendidos" id="vendidos"></div>
   </section>
 
   <section aria-labelledby="rot-avaliacao">
@@ -645,8 +587,6 @@ const CONFIG = {
     chave: '<path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/>',
     documento: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
     escudo: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
-    esq: '<path d="m15 18-6-6 6-6"/>',
-    dir: '<path d="m9 18 6-6-6-6"/>',
     estrela: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
     instagram: '<rect width="20" height="20" x="2" y="2" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/>',
     youtube: '<path d="M2.5 17a24 24 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.6 49.6 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24 24 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.6 49.6 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/>',
@@ -697,98 +637,37 @@ const CONFIG = {
     <p class="frase">${fmt(k.frase)}</p>
     <a class="wpp-topo" href="${wa(C.whatsapp.mensagemGeral)}" target="_blank" rel="noopener">${ic("wpp", "i-wpp")}${esc(k.botaoTopo)}</a>`;
 
-  /* ---------- 2. Imóveis que já vendi ---------- */
-  const V = C.vendidos, imoveis = V.imoveis;
+  /* ---------- 2. Últimos imóveis vendidos ---------- */
+  const V = C.vendidos;
   $("rot-vendidos").textContent = V.rotulo;
-  $("seta-ant").innerHTML = ic("esq");
-  $("seta-prox").innerHTML = ic("dir");
 
-  // Lista "achatada" de fotos: cada foto sabe a qual imóvel pertence
-  const fotos = [];
-  imoveis.forEach((im, i) => im.fotos.forEach((src, f) => fotos.push({ src, imovel: i, foto: f, total: im.fotos.length })));
+  const mensagemCaso = (im) => {
+    const resumo = im.resumo || `o imóvel em ${im.bairro}`;
+    // Sem "diasParaVender", a mensagem omite o trecho "em {dias} dias"
+    const msg = C.whatsapp.mensagemCaso.replace("{imovel}", resumo);
+    return tem(im.diasParaVender) ? msg.replace("{dias}", im.diasParaVender) : msg.replace(/\s*em \{dias\} dias?/, "");
+  };
 
-  const trilho = $("trilho");
-  trilho.innerHTML = fotos.map((ft, n) => {
-    const im = imoveis[ft.imovel];
+  $("vendidos").innerHTML = V.imoveis.slice(0, 3).map((im, n) => {
     const specs = [
       tem(im.diasParaVender) ? `<span>${ic("relogio")}Vendido em ${plural(im.diasParaVender, "dia", "dias")}</span>` : "",
       V.mostrarPrecoVenda && tem(im.precoVenda) ? `<span>${ic("check")}Vendido por ${esc(im.precoVenda)}</span>` : ""
     ].join("");
-    return `<div class="foto" role="group" aria-roledescription="foto" aria-label="${esc(im.tipo)} vendido em ${esc(im.bairro)}, foto ${ft.foto + 1} de ${ft.total}">
-      <img src="${esc(ft.src)}" alt="${esc(im.tipo)} em ${esc(im.bairro)}, foto ${ft.foto + 1}" ${n < 2 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async" width="720" height="900">
-      <div class="foto-chips"><span class="chip chip-vendido">${ic("check")}${esc(V.selo)}</span><span class="chip">${ft.foto + 1}/${ft.total}</span></div>
-      <div class="foto-faixa" aria-hidden="true">
-        <div class="faixa-linha"><span class="faixa-titulo">${esc(im.tipo)} · ${esc(im.bairro)}</span>${tem(im.valorAnunciado) ? `<span class="faixa-preco"><small>anunciado por</small>${esc(im.valorAnunciado)}</span>` : ""}</div>
-        ${specs ? `<div class="faixa-specs">${specs}</div>` : ""}
+    return `<article class="cartao vendido">
+      <div class="foto">
+        <img src="${esc(im.foto)}" alt="${esc(im.tipo)} vendido em ${esc(im.bairro)}" ${n === 0 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async" width="960" height="720">
+        <div class="foto-chips"><span class="chip chip-vendido">${ic("check")}${esc(V.selo)}</span></div>
+        <div class="foto-faixa">
+          <div class="faixa-linha"><span class="faixa-titulo">${esc(im.tipo)} · ${esc(im.bairro)}</span>${tem(im.valorAnunciado) ? `<span class="faixa-preco"><small>anunciado por</small>${esc(im.valorAnunciado)}</span>` : ""}</div>
+          ${specs ? `<div class="faixa-specs">${specs}</div>` : ""}
+        </div>
       </div>
-    </div>`;
+      <div class="vendido-rodape">
+        <p class="imovel-local">${ic("pin")}<span>${esc(im.bairro)}, ${esc(im.cidade)}</span></p>
+        <a class="btn btn-principal" href="${wa(mensagemCaso(im))}" target="_blank" rel="noopener" aria-label="${esc(V.botao)}: ${esc(im.resumo || im.tipo)}">${ic("wpp", "i-wpp")}${esc(V.botao)}</a>
+      </div>
+    </article>`;
   }).join("");
-  const slides = [...trilho.children];
-
-  $("indicadores").innerHTML = imoveis.map((im, i) =>
-    `<li class="grupo" data-grupo="${i}">${im.fotos.map((_, f) => {
-      const n = fotos.findIndex((x) => x.imovel === i && x.foto === f);
-      return `<button class="ponto" data-n="${n}" aria-label="Imóvel ${i + 1}, foto ${f + 1}"></button>`;
-    }).join("")}</li>`).join("");
-  const pontos = [...document.querySelectorAll(".ponto")];
-  const grupos = [...document.querySelectorAll(".grupo")];
-
-  const irPara = (n, suave = true) => {
-    n = Math.max(0, Math.min(slides.length - 1, n));
-    const s = slides[n];
-    trilho.scrollTo({ left: s.offsetLeft - (trilho.clientWidth - s.offsetWidth) / 2, behavior: suave ? "smooth" : "auto" });
-  };
-  $("indicadores").addEventListener("click", (e) => { const b = e.target.closest(".ponto"); if (b) irPara(+b.dataset.n); });
-  $("seta-ant").addEventListener("click", () => irPara(atual - 1));
-  $("seta-prox").addEventListener("click", () => irPara(atual + 1));
-
-  function renderImovel(i) {
-    const im = imoveis[i];
-    $("imovel").innerHTML = `
-      <p class="imovel-local">${ic("pin")}<span>${esc(im.bairro)}, ${esc(im.cidade)}</span></p>
-      <span class="contador">Venda ${i + 1} de ${imoveis.length}</span>`;
-    const resumo = im.resumo || `o imóvel em ${im.bairro}`;
-    // Sem "diasParaVender", a mensagem omite o trecho "em {dias} dias"
-    let msg = C.whatsapp.mensagemCaso.replace("{imovel}", resumo);
-    msg = tem(im.diasParaVender) ? msg.replace("{dias}", im.diasParaVender) : msg.replace(/\s*em \{dias\} dias?/, "");
-    const btn = $("btn-imovel");
-    btn.href = wa(msg);
-    btn.innerHTML = ic("wpp", "i-wpp") + esc(V.botao);
-    btn.setAttribute("aria-label", `${V.botao}: ${resumo}`);
-  }
-
-  let atual = -1, imovelAtual = -1, trocaTimer;
-  function marcar(n) {
-    if (n === atual) return;
-    atual = n;
-    pontos.forEach((p, i) => { p.classList.toggle("ativo", i === n); p.setAttribute("aria-current", i === n ? "true" : "false"); });
-    const g = fotos[n].imovel;
-    grupos.forEach((el, i) => el.classList.toggle("ativo", i === g));
-    $("seta-ant").disabled = n === 0;
-    $("seta-prox").disabled = n === slides.length - 1;
-    if (g !== imovelAtual) {
-      const primeira = imovelAtual === -1;
-      imovelAtual = g;
-      const box = $("imovel");
-      clearTimeout(trocaTimer);
-      if (primeira) { renderImovel(g); return; }
-      box.classList.add("trocando");
-      trocaTimer = setTimeout(() => { renderImovel(g); box.classList.remove("trocando"); }, 180);
-    }
-  }
-  // Detecta qual foto está no centro da tela
-  function detectar() {
-    const centro = trilho.scrollLeft + trilho.clientWidth / 2;
-    let melhor = 0, dist = Infinity;
-    slides.forEach((s, i) => {
-      const d = Math.abs(s.offsetLeft + s.offsetWidth / 2 - centro);
-      if (d < dist) { dist = d; melhor = i; }
-    });
-    marcar(melhor);
-  }
-  trilho.addEventListener("scroll", detectar, { passive: true });
-  window.addEventListener("resize", detectar);
-  detectar();
 
   /* ---------- 3. Avaliação gratuita ---------- */
   const A = C.avaliacao;
