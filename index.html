@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Corretor de imóveis · Venda seu imóvel</title>
+<meta name="description" content="Venda seu imóvel com segurança. Avaliação gratuita e atendimento direto no WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+
+<script>
+/* =====================================================================
+   CONFIGURAÇÃO DO CORRETOR (página para PROPRIETÁRIOS)
+   Tudo o que muda de um corretor para outro fica AQUI.
+   Troque os textos entre [colchetes], as fotos, os links e as cores.
+   Não é preciso mexer em nada abaixo deste bloco.
+
+   Dicas:
+   - Fotos dos imóveis vendidos: formato retrato 4:5, como no feed do
+     Instagram (ex.: 720x900 ou 1080x1350), em WebP ou JPG, até ~150 KB cada.
+     Pode ser um caminho local ("fotos/ap1-sala.webp") ou uma URL.
+   - Para destacar uma palavra com "marca-texto", coloque-a entre *asteriscos*.
+   - Redes sociais: deixe "" (vazio) para esconder o ícone (no WhatsApp, use false).
+   - IMPORTANTE: os resultados (dias para vender, números em destaque) devem
+     ser dados REAIS do corretor. Só publique imóveis vendidos com
+     autorização dos proprietários.
+   ===================================================================== */
+const CONFIG = {
+
+  tema: {
+    cores: {
+      fundo:         "#0e0d0b",  // fundo da página
+      superficie:    "#191815",  // fundo dos cartões
+      borda:         "#2a2823",  // bordas finas
+      texto:         "#f4f1ea",  // texto principal
+      textoSuave:    "#a7a196",  // textos secundários
+      destaque:      "#d6b062",  // cor da marca (botões, CRECI, detalhes)
+      textoDestaque: "#16120a",  // texto sobre a cor de destaque
+      whatsapp:      "#25d366"   // verde do WhatsApp (borda do botão do topo e ícones)
+    },
+    fontes: {
+      titulos: "'Barlow Condensed', 'Arial Narrow', sans-serif",
+      texto:   "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+      // Link do Google Fonts com as duas fontes acima ("" para usar só fontes do sistema)
+      googleFonts: "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
+    },
+    arredondamento: "20px"
+  },
+
+  corretor: {
+    nome:  "[Nome da Corretora]",
+    foto:  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=320&h=320&q=60&auto=format&fit=crop&crop=faces",
+    cargo: "Corretora de imóveis",
+    creci: "[123456-F/SP]",
+    frase: "Vendo seu imóvel com *segurança*, bom posicionamento e sem dor de cabeça.",
+    cidade: "[São Paulo/SP]",
+    botaoTopo: "Quero vender meu imóvel"   // botão verde logo abaixo da frase
+  },
+
+  whatsapp: {
+    numero: "5511900000000",  // formato 55 + DDD + número, só dígitos  [trocar]
+    mensagemGeral:     "Olá! Tenho um imóvel para vender e gostaria de conversar.",
+    // {imovel} vira o "resumo" de cada imóvel vendido e {dias} vira o "diasParaVender"
+    mensagemCaso:      "Olá! Vi que você vendeu {imovel} em {dias} dias e tenho um imóvel para vender.",
+    mensagemAvaliacao: "Olá! Gostaria de uma avaliação gratuita do meu imóvel.",
+    mensagemGuia:      "Quero receber o guia"
+  },
+
+  vendidos: {
+    rotulo: "Imóveis que já vendi",
+    selo: "Vendido",                       // selo sobre as fotos
+    botao: "Quero um resultado assim",
+    // true = mostra também o preço pelo qual o imóvel foi vendido.
+    // Deixe false se o proprietário não autorizou divulgar o valor de venda.
+    mostrarPrecoVenda: false,
+    imoveis: [
+      {
+        tipo: "Apartamento",
+        bairro: "Jardins",
+        cidade: "São Paulo/SP",
+        valorAnunciado: "R$ 850 mil",
+        precoVenda: "R$ 820 mil",          // só aparece se mostrarPrecoVenda = true
+        diasParaVender: 45,                // dado real  [trocar]
+        resumo: "o apartamento no Jardins", // vai na mensagem: "Vi que você vendeu o apartamento no Jardins em 45 dias..."
+        fotos: [
+          "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=720&h=900&q=60&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=720&h=900&q=60&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=720&h=900&q=60&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=720&h=900&q=60&auto=format&fit=crop"
+        ]
+      },
+      {
+        tipo: "Casa em condomínio",
+        bairro: "Alphaville",
+        cidade: "Barueri/SP",
+        valorAnunciado: "R$ 1,9 mi",
+        precoVenda: "R$ 1,8 mi",
+        diasParaVender: 62,
+        resumo: "a casa em Alphaville",
+        fotos: [
+          "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=720&h=900&q=60&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=720&h=900&q=60&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=720&h=900&q=60&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=720&h=900&q=60&auto=format&fit=crop"
+        ]
+      },
+      {
+        tipo: "Studio",
+        bairro: "Vila Madalena",
+        cidade: "São Paulo/SP",
+        valorAnunciado: "R$ 520 mil",
+        precoVenda: "R$ 505 mil",
+        diasParaVender: 28,
+        resumo: "o studio na Vila Madalena",
+        fotos: [
+          "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=720&h=900&q=60&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=720&h=900&q=60&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=720&h=900&q=60&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=720&h=900&q=60&auto=format&fit=crop"
+        ]
+      }
+    ]
+  },
+
+  avaliacao: {
+    rotulo: "Avaliação gratuita",
+    titulo: "Quanto vale o seu *imóvel*?",
+    texto: "Faço uma avaliação gratuita, com base nos preços reais da sua região, sem compromisso.",
+    botao: "Quero minha avaliação gratuita",
+    tituloPassos: "Como funciona",
+    // ícones disponíveis: "etiqueta", "megafone", "chave", "documento", "check"
+    passos: [
+      { icone: "etiqueta", titulo: "Avaliação do imóvel e definição do preço" },
+      { icone: "megafone", titulo: "Divulgação e visitas qualificadas" },
+      { icone: "chave",    titulo: "Negociação, documentação e entrega das chaves" }
+    ]
+  },
+
+  material: {
+    rotulo: "Material gratuito",
+    titulo: "Guia gratuito: o que fazer antes de colocar seu imóvel à *venda*",
+    texto: "Documentos, preparação para as fotos, erros que atrasam a venda e como chegar ao preço certo. Te envio pelo WhatsApp.",
+    botao: "Quero receber o guia",
+    selo: "PDF · 1 página",
+    // Miniatura do guia mostrada no card ("" = mostra só um ícone).
+    // Se mudar o guia, gere uma nova imagem da página (ex.: print reduzido para 300px de largura).
+    miniatura: "guia-miniatura.jpg"
+  },
+
+  sobre: {
+    rotulo: "Por que vender comigo",
+    titulo: "Quem vai cuidar da *venda* do seu imóvel",   // a palavra entre *asteriscos* fica na cor de destaque
+    // Foto do card: retrato vertical (ex.: 600x750), de preferência num ambiente de trabalho
+    foto: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=480&h=600&q=60&auto=format&fit=crop&crop=faces",
+    texto: "Sou [Nome], corretora há [12] anos em [sua cidade]. Cuido pessoalmente de cada etapa: avaliação, fotos, divulgação, visitas, negociação e documentação.",
+    // Use SOMENTE números reais.  [trocar pelos seus]
+    numeros: [
+      { valor: 300, prefixo: "+", sufixo: "", rotulo: "imóveis vendidos" },
+      { valor: 58,  prefixo: "",  sufixo: "", rotulo: "dias, em média, para vender" },
+      { valor: 12,  prefixo: "",  sufixo: "", rotulo: "anos de mercado" }
+    ]
+  },
+
+  depoimentos: {
+    rotulo: "Quem já vendeu comigo",
+    lista: [
+      {
+        nome: "[Ricardo A.]",
+        detalhe: "Vendeu casa em [Alphaville]",
+        foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&q=60&auto=format&fit=crop&crop=faces",
+        texto: "Chegamos a um preço justo com base em vendas reais do bairro. Vendeu antes do que eu esperava e sem desgaste."
+      },
+      {
+        nome: "[Cláudia M.]",
+        detalhe: "Vendeu apartamento em [Moema]",
+        foto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&q=60&auto=format&fit=crop&crop=faces",
+        texto: "Cuidou de toda a documentação com muito capricho. Me senti segura do primeiro contato até a escritura."
+      },
+      {
+        nome: "[Paulo R.]",
+        detalhe: "Vendeu studio em [Pinheiros]",
+        foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&q=60&auto=format&fit=crop&crop=faces",
+        texto: "Só trouxe visitas de compradores realmente interessados e me manteve informado em cada etapa."
+      }
+    ]
+  },
+
+  redes: {
+    whatsapp:  true,                                 // true = mostra o WhatsApp (usa a "mensagemGeral"); false = esconde
+    instagram: "https://instagram.com/[seuusuario]",
+    youtube:   "https://youtube.com/@[seucanal]",
+    tiktok:    "",                                   // vazio = ícone escondido
+    linkedin:  "https://linkedin.com/in/[seuperfil]",
+    email:     "[contato@seuemail.com.br]",
+    telefone:  "+5511900000000"
+  },
+
+  rodape: {
+    aviso: "Valores e condições sujeitos a alteração sem aviso prévio."
+  },
+
+  privacidade: {
+    atualizadaEm: "[01/11/2026]"
+  },
+
+  // true = pede ao Google para não mostrar esta página nas buscas (use em prévias/modelos).
+  // Para a página real do corretor, troque para false.
+  ocultarDoGoogle: true
+};
+</script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background-color: var(--fundo);
+    background-image: radial-gradient(120% 60% at 50% -10%, color-mix(in srgb, var(--destaque) 16%, transparent), transparent 70%);
+    background-repeat: no-repeat;
+    color: var(--texto);
+    font: 400 16px/1.5 var(--fonte-texto);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; }
+  mark {
+    background: var(--destaque);
+    color: var(--texto-destaque);
+    padding: 0 .28em;
+    border-radius: .3em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  svg.i { width: 1.15em; height: 1.15em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .pagina { max-width: 520px; margin: 0 auto; padding: 28px 16px calc(32px + env(safe-area-inset-bottom)); }
+  section { margin-top: 40px; }
+  .cabecalho + section { margin-top: 36px; }
+
+  /* Rótulo de seção com linhas laterais */
+  .rotulo {
+    display: flex; align-items: center; gap: 14px;
+    margin: 0 0 18px;
+    font: 700 13px/1 var(--fonte-texto);
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--texto-suave);
+  }
+  .rotulo::before, .rotulo::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--borda)); }
+  .rotulo::after { background: linear-gradient(90deg, var(--borda), transparent); }
+
+  .cartao {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--superficie) 100%, #fff 3%), var(--superficie));
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+  }
+
+  /* ---------- Botões ---------- */
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; min-height: 56px; padding: 14px 20px;
+    border-radius: 14px; border: 0;
+    font: 700 16px/1.2 var(--fonte-texto); text-decoration: none; text-align: center;
+    cursor: pointer;
+    transition: transform .15s ease, filter .15s ease, background-color .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-principal { background: var(--destaque); color: var(--texto-destaque); box-shadow: 0 8px 24px -10px color-mix(in srgb, var(--destaque) 70%, transparent); }
+  .btn-principal:hover { filter: brightness(1.06); }
+  .btn-principal .i-wpp { color: var(--texto-destaque); }
+  .btn-contorno { background: transparent; color: var(--texto); border: 1px solid var(--borda); }
+  .btn-contorno:hover { background: color-mix(in srgb, var(--texto) 5%, transparent); }
+  :focus-visible { outline: 2px solid var(--destaque); outline-offset: 3px; }
+
+  /* ---------- 1. Cabeçalho ---------- */
+  .cabecalho { text-align: center; }
+  .avatar {
+    width: 116px; height: 116px; margin: 0 auto 16px;
+    border-radius: 50%; padding: 4px;
+    background: conic-gradient(from 210deg, var(--destaque), color-mix(in srgb, var(--destaque) 35%, #000), var(--destaque));
+    box-shadow: 0 0 48px -6px color-mix(in srgb, var(--destaque) 55%, transparent);
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 3px solid var(--fundo); background: var(--superficie); }
+  .nome {
+    margin: 0;
+    font: 700 clamp(34px, 9vw, 42px)/1 var(--fonte-titulos);
+    letter-spacing: .02em; text-transform: uppercase;
+  }
+  .cargo { margin: 12px 0 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 10px; color: var(--texto-suave); font-size: 15px; }
+  .creci {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--destaque) 55%, transparent);
+    background: color-mix(in srgb, var(--destaque) 12%, transparent);
+    color: var(--destaque); font-weight: 700; font-size: 14px; letter-spacing: .02em;
+  }
+  @media (max-width: 440px) { .cargo { flex-direction: column; } .cargo .sep { display: none; } }
+  .frase { margin: 16px auto 0; max-width: 400px; font-size: 17px; line-height: 1.55; color: color-mix(in srgb, var(--texto) 88%, var(--fundo)); }
+
+  /* Botão verde de WhatsApp em destaque, logo abaixo da frase */
+  .wpp-topo {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 56px; margin: 22px 0 0; padding: 12px 18px;
+    border-radius: 999px; border: 1px solid var(--whatsapp);
+    color: var(--texto); font-size: 16.5px; font-weight: 600; text-decoration: none;
+    /* brilho verde ao redor da borda */
+    box-shadow:
+      0 0 14px -2px color-mix(in srgb, var(--whatsapp) 55%, transparent),
+      inset 0 0 12px -4px color-mix(in srgb, var(--whatsapp) 45%, transparent);
+    transition: box-shadow .2s, transform .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wpp-topo:hover {
+    box-shadow:
+      0 0 20px 0 color-mix(in srgb, var(--whatsapp) 65%, transparent),
+      inset 0 0 14px -4px color-mix(in srgb, var(--whatsapp) 55%, transparent);
+  }
+  .wpp-topo:active { transform: scale(.98); }
+  .wpp-topo .i-wpp { color: var(--whatsapp); width: 1.3em; height: 1.3em; }
+
+  /* ---------- 2. Imóveis vendidos ---------- */
+  .carrossel { position: relative; }
+  .trilho {
+    position: relative;
+    display: flex; gap: 10px;
+    overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    border-radius: var(--raio);
+  }
+  .trilho::-webkit-scrollbar { display: none; }
+  .foto {
+    position: relative; flex: 0 0 100%;
+    aspect-ratio: 4 / 5;  /* formato do feed do Instagram */
+    scroll-snap-align: center; scroll-snap-stop: always;
+    border-radius: var(--raio); overflow: hidden;
+    background: var(--superficie);
+  }
+  .foto img { width: 100%; height: 100%; object-fit: cover; }
+  .foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.38), transparent 30%); pointer-events: none; }
+  .foto-chips { position: absolute; z-index: 1; top: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; pointer-events: none; }
+  .chip {
+    padding: 5px 10px; border-radius: 999px;
+    background: rgba(10,10,10,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    color: #fff; font-size: 12.5px; font-weight: 600; white-space: nowrap;
+  }
+  /* Selo "Vendido" */
+  .chip-vendido {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 13px 7px 11px;
+    background: var(--destaque); color: var(--texto-destaque);
+    font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    box-shadow: 0 6px 18px -6px rgba(0,0,0,.6);
+  }
+  .chip-vendido svg { width: 15px; height: 15px; stroke-width: 3; }
+  /* Faixa translúcida com o resumo do imóvel (no máximo 1/4 da foto) */
+  .foto-faixa {
+    position: absolute; z-index: 1; left: 0; right: 0; bottom: 0;
+    max-height: 25%; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    padding: 9px 14px;
+    background: linear-gradient(180deg, rgba(8,8,8,.35), rgba(8,8,8,.68));
+    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+    border-top: 1px solid rgba(255,255,255,.12);
+    color: #fff; pointer-events: none;
+  }
+  .faixa-linha { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; min-width: 0; }
+  .faixa-titulo { min-width: 0; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font: 700 17px/1.1 var(--fonte-titulos); letter-spacing: .02em; text-transform: uppercase; }
+  .faixa-preco { flex: none; display: flex; flex-direction: column; align-items: flex-end; font: 700 19px/1.05 var(--fonte-titulos); color: var(--destaque); }
+  .faixa-preco small { margin-bottom: 2px; font: 500 10.5px/1 var(--fonte-texto); color: rgba(255,255,255,.75); }
+  .faixa-specs { display: flex; gap: 12px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.92); white-space: nowrap; }
+  .faixa-specs span { display: inline-flex; align-items: center; gap: 5px; }
+  .faixa-specs svg { width: 14px; height: 14px; color: var(--destaque); }
+
+  .seta {
+    position: absolute; top: 50%; z-index: 2; translate: 0 -50%;
+    width: 44px; height: 44px; display: none; place-items: center;
+    border-radius: 50%; border: 0; cursor: pointer;
+    background: rgba(10,10,10,.6); color: #fff; backdrop-filter: blur(6px);
+  }
+  .seta-ant { left: 12px; } .seta-prox { right: 12px; }
+  .seta:disabled { opacity: 0; pointer-events: none; }
+  @media (hover: hover) and (pointer: fine) { .seta { display: grid; } }
+
+  .indicadores { display: flex; justify-content: center; align-items: center; gap: 14px; margin: 14px 0 0; padding: 0; list-style: none; }
+  .grupo { display: flex; gap: 5px; padding: 6px 4px; border-radius: 99px; }
+  .ponto {
+    width: 7px; height: 7px; padding: 0; border: 0; border-radius: 99px; cursor: pointer;
+    background: var(--borda); transition: width .25s ease, background-color .25s ease;
+  }
+  .grupo.ativo .ponto { background: color-mix(in srgb, var(--destaque) 40%, var(--borda)); }
+  .ponto.ativo { width: 22px; background: var(--destaque) !important; }
+
+  .imovel { margin-top: 14px; padding: 12px 14px 14px; }
+  .imovel-conteudo {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    margin-bottom: 12px; color: var(--texto-suave); font-size: 14px;
+    transition: opacity .22s ease, transform .22s ease;
+  }
+  .imovel-conteudo.trocando { opacity: 0; transform: translateY(6px); }
+  .imovel-local { display: flex; align-items: center; gap: 6px; min-width: 0; margin: 0; }
+  .imovel-local span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .imovel-local svg { color: var(--destaque); }
+  .contador { flex: none; font-size: 13px; font-weight: 500; }
+
+  /* ---------- 3. Avaliação gratuita ---------- */
+  .avaliacao {
+    padding: 22px 18px 20px;
+    background:
+      radial-gradient(110% 80% at 0% 0%, color-mix(in srgb, var(--destaque) 16%, transparent), transparent 60%),
+      var(--superficie);
+    border-color: color-mix(in srgb, var(--destaque) 35%, var(--borda));
+  }
+  .avaliacao h3 {
+    margin: 0;
+    font: 700 clamp(30px, 8.4vw, 38px)/1.02 var(--fonte-titulos);
+    letter-spacing: .01em; text-transform: uppercase; text-wrap: balance;
+  }
+  .avaliacao h3 mark { background: none; color: var(--destaque); padding: 0; }
+  .avaliacao > p { margin: 10px 0 18px; color: var(--texto-suave); font-size: 15.5px; }
+  .passos-titulo {
+    margin: 26px 0 6px; padding-top: 20px; border-top: 1px solid var(--borda);
+    font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--texto-suave);
+  }
+  .passos { margin: 0; padding: 0; list-style: none; }
+  .passo { position: relative; display: grid; grid-template-columns: 46px 1fr; gap: 14px; align-items: center; padding: 10px 0; }
+  /* linha que liga um passo ao outro */
+  .passo:not(:last-child)::after {
+    content: ""; position: absolute; left: 22px; top: 60px; bottom: -6px; width: 2px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--destaque) 55%, transparent), color-mix(in srgb, var(--destaque) 12%, transparent));
+  }
+  .passo-ic {
+    position: relative; width: 46px; height: 46px; display: grid; place-items: center;
+    border-radius: 50%; font-size: 20px; color: var(--destaque);
+    background: color-mix(in srgb, var(--destaque) 13%, var(--superficie));
+    border: 1px solid color-mix(in srgb, var(--destaque) 50%, transparent);
+  }
+  .passo-ic b {
+    position: absolute; top: -4px; right: -4px; width: 19px; height: 19px; display: grid; place-items: center;
+    border-radius: 50%; background: var(--destaque); color: var(--texto-destaque);
+    font: 800 11px/1 var(--fonte-texto); box-shadow: 0 0 0 2px var(--superficie);
+  }
+  .passo strong { font-size: 15.5px; font-weight: 600; line-height: 1.35; }
+
+  /* ---------- 4. Material gratuito ---------- */
+  .material {
+    position: relative; overflow: hidden; padding: 20px 18px 18px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--destaque) 20%, transparent), transparent 60%),
+      var(--superficie);
+    border-color: color-mix(in srgb, var(--destaque) 35%, var(--borda));
+  }
+  .material-cab { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; }
+  .material-cab > div { min-width: 0; }
+  .material .selo {
+    display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--destaque); color: var(--texto-destaque);
+    font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .material .selo svg { width: 13px; height: 13px; }
+  .material .material-cab h3 { font-size: 18px; line-height: 1.3; text-wrap: balance; }
+  .material h3 mark { background: none; color: var(--destaque); padding: 0; }
+
+  /* Miniatura da folha do guia, levemente inclinada sobre uma segunda folha */
+  .miniatura { position: relative; width: 104px; margin: 4px 6px 8px 0; rotate: 4deg; }
+  .miniatura::before {
+    content: ""; position: absolute; inset: 0;
+    background: color-mix(in srgb, #fff 82%, var(--destaque));
+    border-radius: 4px; rotate: -8deg; translate: -6px 4px; opacity: .55;
+  }
+  .miniatura img {
+    position: relative; width: 100%; height: auto; aspect-ratio: 300 / 424;
+    border-radius: 4px; background: #fff;
+    box-shadow: 0 14px 28px -10px rgba(0,0,0,.7), 0 0 0 1px rgba(0,0,0,.08);
+  }
+  .btn-material {
+    background: color-mix(in srgb, var(--destaque) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--destaque) 55%, transparent);
+    color: var(--texto);
+  }
+  .btn-material:hover { background: color-mix(in srgb, var(--destaque) 24%, transparent); }
+  .btn-material .i-wpp { color: var(--whatsapp); }
+  .icone-box {
+    flex: none; width: 52px; height: 52px; display: grid; place-items: center;
+    border-radius: 14px; background: color-mix(in srgb, var(--destaque) 14%, transparent);
+    color: var(--destaque); font-size: 24px;
+  }
+  .material h3, .sobre h3 { margin: 0; font-size: 19px; line-height: 1.35; font-weight: 700; }
+  .material p, .sobre p { margin: 10px 0 18px; color: var(--texto-suave); font-size: 15.5px; }
+
+  /* ---------- 5. Por que vender comigo ---------- */
+  .sobre { padding: 14px 14px 20px; }
+  .sobre-topo { display: grid; grid-template-columns: 42% 1fr; gap: 16px; align-items: center; }
+  .sobre-topo.sem-foto { grid-template-columns: 1fr; padding: 8px 6px 0; }
+  .sobre-foto { aspect-ratio: 4 / 5; max-width: 100%; border-radius: 14px; overflow: hidden; background: var(--borda); }
+  .sobre-foto img { width: 100%; height: 100%; object-fit: cover; }
+  .sobre-info { min-width: 0; padding-right: 4px; }
+  .sobre .sobre-info h3 {
+    font: 600 clamp(24px, 6.6vw, 30px)/1.05 var(--fonte-titulos);
+    letter-spacing: .005em; text-wrap: balance;
+  }
+  .sobre-info h3 mark { background: none; color: var(--destaque); padding: 0; }
+  .sobre .sobre-nome {
+    margin: 12px 0 8px; color: var(--texto-suave);
+    font-size: 11.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  }
+  .sobre-creci { display: inline-flex; align-items: center; gap: 5px; color: var(--destaque); font-size: 12.5px; font-weight: 700; }
+  .sobre-creci svg { width: 14px; height: 14px; }
+  .sobre > p { margin: 18px 6px 20px; }
+  .numeros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .numero { padding: 14px 8px; text-align: center; border-radius: 14px; border: 1px solid var(--borda); background: color-mix(in srgb, var(--texto) 3%, transparent); }
+  .numero strong { display: block; font: 700 32px/1 var(--fonte-titulos); color: var(--destaque); font-variant-numeric: tabular-nums; }
+  .numero span { display: block; margin-top: 6px; font-size: 12.5px; line-height: 1.3; color: var(--texto-suave); }
+
+  /* ---------- 6. Depoimentos ---------- */
+  .depoimentos { display: grid; gap: 10px; }
+  .depo { padding: 18px 18px 16px; }
+  .estrelas { display: flex; gap: 2px; color: var(--destaque); }
+  .estrelas svg { width: 15px; height: 15px; fill: currentColor; stroke: none; }
+  .depo blockquote { margin: 10px 0 14px; font-size: 15.5px; line-height: 1.5; }
+  .depo-autor { display: flex; align-items: center; gap: 10px; }
+  .depo-autor img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--borda); }
+  .depo-autor strong { display: block; font-size: 14.5px; }
+  .depo-autor span { display: block; font-size: 13px; color: var(--texto-suave); }
+
+  /* ---------- 7. Redes ---------- */
+  .redes { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .redes a {
+    width: 48px; height: 48px; display: grid; place-items: center;
+    border-radius: 16px; border: 1px solid var(--borda); background: var(--superficie);
+    color: var(--texto); font-size: 22px;
+    transition: color .15s, border-color .15s, transform .15s;
+  }
+  .redes a:hover { color: var(--destaque); border-color: color-mix(in srgb, var(--destaque) 50%, var(--borda)); transform: translateY(-2px); }
+
+  /* ---------- 8. Rodapé ---------- */
+  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--borda); text-align: center; color: var(--texto-suave); font-size: 13.5px; }
+  footer p { margin: 0 0 8px; }
+  footer .rod-nome { color: var(--texto); font-weight: 600; font-size: 14.5px; }
+  footer .rod-creci { color: var(--destaque); font-weight: 700; }
+  footer a { text-decoration: underline; text-underline-offset: 3px; }
+  footer .aviso { margin-top: 14px; font-size: 12.5px; opacity: .85; }
+
+  /* ---------- Política de Privacidade ---------- */
+  dialog {
+    width: min(640px, 100%); max-height: 100%; height: 100%; margin: 0 auto; padding: 0;
+    border: 0; background: var(--fundo); color: var(--texto);
+  }
+  @media (min-width: 700px) { dialog { height: auto; max-height: calc(100% - 64px); margin: 32px auto; border: 1px solid var(--borda); border-radius: var(--raio); } }
+  dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(3px); }
+  .pp-topo { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px 14px 22px; background: var(--fundo); border-bottom: 1px solid var(--borda); }
+  .pp-topo h2 { margin: 0; font: 700 22px/1.1 var(--fonte-titulos); text-transform: uppercase; letter-spacing: .02em; }
+  .pp-fechar { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; border: 1px solid var(--borda); background: transparent; color: var(--texto); font-size: 20px; cursor: pointer; }
+  .pp-corpo { padding: 8px 22px 32px; font-size: 15px; color: color-mix(in srgb, var(--texto) 86%, var(--fundo)); }
+  .pp-corpo h3 { margin: 22px 0 6px; font-size: 16px; color: var(--texto); }
+  .pp-corpo p, .pp-corpo ul { margin: 0 0 10px; }
+  .pp-corpo ul { padding-left: 20px; }
+
+  @media (min-width: 700px) {
+    .pagina { padding-top: 64px; }
+    .depoimentos { gap: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<main class="pagina">
+  <header class="cabecalho" id="cabecalho"></header>
+
+  <section aria-labelledby="rot-vendidos">
+    <h2 class="rotulo" id="rot-vendidos"></h2>
+    <div class="carrossel">
+      <div class="trilho" id="trilho" tabindex="0" aria-roledescription="carrossel" aria-label="Fotos dos imóveis vendidos"></div>
+      <button class="seta seta-ant" id="seta-ant" aria-label="Foto anterior"></button>
+      <button class="seta seta-prox" id="seta-prox" aria-label="Próxima foto"></button>
+    </div>
+    <ul class="indicadores" id="indicadores" aria-label="Posição no carrossel"></ul>
+    <article class="cartao imovel" aria-live="polite">
+      <div class="imovel-conteudo" id="imovel"></div>
+      <a class="btn btn-principal" id="btn-imovel" target="_blank" rel="noopener"></a>
+    </article>
+  </section>
+
+  <section aria-labelledby="rot-avaliacao">
+    <h2 class="rotulo" id="rot-avaliacao"></h2>
+    <div class="cartao avaliacao" id="avaliacao"></div>
+  </section>
+
+  <section aria-labelledby="rot-material">
+    <h2 class="rotulo" id="rot-material"></h2>
+    <div class="cartao material" id="material"></div>
+  </section>
+
+  <section aria-labelledby="rot-sobre">
+    <h2 class="rotulo" id="rot-sobre"></h2>
+    <div class="cartao sobre" id="sobre"></div>
+  </section>
+
+  <section aria-labelledby="rot-depo">
+    <h2 class="rotulo" id="rot-depo"></h2>
+    <div class="depoimentos" id="depoimentos"></div>
+  </section>
+
+  <section aria-label="Redes sociais e contato" id="sec-redes">
+    <ul class="redes" id="redes"></ul>
+  </section>
+
+  <footer id="rodape"></footer>
+</main>
+
+<dialog id="privacidade" aria-labelledby="pp-titulo">
+  <div class="pp-topo">
+    <h2 id="pp-titulo">Política de Privacidade</h2>
+    <button class="pp-fechar" id="pp-fechar" aria-label="Fechar">✕</button>
+  </div>
+  <div class="pp-corpo" id="pp-corpo"></div>
+</dialog>
+
+<script>
+(function () {
+  const C = CONFIG;
+  const $ = (id) => document.getElementById(id);
+
+  /* ---------- utilitários ---------- */
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmt = (s) => esc(s).replace(/\*(.+?)\*/g, "<mark>$1</mark>");
+  const plural = (n, um, varios) => `${n} ${n == 1 ? um : varios}`;
+  const wa = (msg) => "https://wa.me/" + String(C.whatsapp.numero).replace(/\D/g, "") + "?text=" + encodeURIComponent(msg);
+  const tem = (v) => v != null && String(v).trim() !== "";
+
+  const P = {
+    wpp: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.2 8.6c.3 2.6 3.6 5.9 6.2 6.2l.8-1.3-1.7-1-1 .6c-.9-.4-2.4-1.9-2.8-2.8l.6-1-1-1.7z"/>',
+    pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+    relogio: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    etiqueta: '<path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r="1"/>',
+    megafone: '<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+    chave: '<path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/>',
+    documento: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
+    escudo: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+    esq: '<path d="m15 18-6-6 6-6"/>',
+    dir: '<path d="m9 18 6-6-6-6"/>',
+    estrela: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+    instagram: '<rect width="20" height="20" x="2" y="2" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/>',
+    youtube: '<path d="M2.5 17a24 24 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.6 49.6 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24 24 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.6 49.6 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/>',
+    tiktok: '<path d="M9 12a4 4 0 1 0 4 4V3c.6 2.6 2.6 4.6 5.5 5"/>',
+    linkedin: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+    email: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+    telefone: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>'
+  };
+  const ic = (n, cls = "") => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[n] || P.check}</svg>`;
+
+  // Imagem que não carregar vira um bloco neutro com a cor do tema
+  document.addEventListener("error", (e) => {
+    const img = e.target;
+    if (img.tagName !== "IMG" || img.dataset.falhou) return;
+    img.dataset.falhou = "1";
+    img.src = "data:image/svg+xml," + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 3"><rect width="4" height="3" fill="${C.tema.cores.superficie}"/></svg>`);
+  }, true);
+
+  /* ---------- tema ---------- */
+  const t = C.tema, r = document.documentElement.style;
+  const mapa = { fundo: "--fundo", superficie: "--superficie", borda: "--borda", texto: "--texto", textoSuave: "--texto-suave", destaque: "--destaque", textoDestaque: "--texto-destaque", whatsapp: "--whatsapp" };
+  for (const k in mapa) r.setProperty(mapa[k], t.cores[k]);
+  r.setProperty("--fonte-titulos", t.fontes.titulos);
+  r.setProperty("--fonte-texto", t.fontes.texto);
+  r.setProperty("--raio", t.arredondamento);
+  if (t.fontes.googleFonts) {
+    const l = document.createElement("link");
+    l.rel = "stylesheet"; l.href = t.fontes.googleFonts;
+    document.head.appendChild(l);
+  }
+  const meta = document.createElement("meta");
+  meta.name = "theme-color"; meta.content = t.cores.fundo;
+  document.head.appendChild(meta);
+  if (C.ocultarDoGoogle) {
+    const robots = document.createElement("meta");
+    robots.name = "robots"; robots.content = "noindex, nofollow";
+    document.head.appendChild(robots);
+  }
+
+  /* ---------- 1. Cabeçalho ---------- */
+  const k = C.corretor;
+  document.title = `${k.nome} · ${k.cargo} · CRECI ${k.creci}`;
+  $("cabecalho").innerHTML = `
+    <div class="avatar"><img src="${esc(k.foto)}" alt="Foto de ${esc(k.nome)}" width="116" height="116" fetchpriority="high"></div>
+    <h1 class="nome">${esc(k.nome)}</h1>
+    <p class="cargo"><span>${esc(k.cargo)}</span><span class="sep" aria-hidden="true">·</span><span class="creci">${ic("escudo")}CRECI ${esc(k.creci)}</span></p>
+    <p class="frase">${fmt(k.frase)}</p>
+    <a class="wpp-topo" href="${wa(C.whatsapp.mensagemGeral)}" target="_blank" rel="noopener">${ic("wpp", "i-wpp")}${esc(k.botaoTopo)}</a>`;
+
+  /* ---------- 2. Imóveis que já vendi ---------- */
+  const V = C.vendidos, imoveis = V.imoveis;
+  $("rot-vendidos").textContent = V.rotulo;
+  $("seta-ant").innerHTML = ic("esq");
+  $("seta-prox").innerHTML = ic("dir");
+
+  // Lista "achatada" de fotos: cada foto sabe a qual imóvel pertence
+  const fotos = [];
+  imoveis.forEach((im, i) => im.fotos.forEach((src, f) => fotos.push({ src, imovel: i, foto: f, total: im.fotos.length })));
+
+  const trilho = $("trilho");
+  trilho.innerHTML = fotos.map((ft, n) => {
+    const im = imoveis[ft.imovel];
+    const specs = [
+      tem(im.diasParaVender) ? `<span>${ic("relogio")}Vendido em ${plural(im.diasParaVender, "dia", "dias")}</span>` : "",
+      V.mostrarPrecoVenda && tem(im.precoVenda) ? `<span>${ic("check")}Vendido por ${esc(im.precoVenda)}</span>` : ""
+    ].join("");
+    return `<div class="foto" role="group" aria-roledescription="foto" aria-label="${esc(im.tipo)} vendido em ${esc(im.bairro)}, foto ${ft.foto + 1} de ${ft.total}">
+      <img src="${esc(ft.src)}" alt="${esc(im.tipo)} em ${esc(im.bairro)}, foto ${ft.foto + 1}" ${n < 2 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async" width="720" height="900">
+      <div class="foto-chips"><span class="chip chip-vendido">${ic("check")}${esc(V.selo)}</span><span class="chip">${ft.foto + 1}/${ft.total}</span></div>
+      <div class="foto-faixa" aria-hidden="true">
+        <div class="faixa-linha"><span class="faixa-titulo">${esc(im.tipo)} · ${esc(im.bairro)}</span>${tem(im.valorAnunciado) ? `<span class="faixa-preco"><small>anunciado por</small>${esc(im.valorAnunciado)}</span>` : ""}</div>
+        ${specs ? `<div class="faixa-specs">${specs}</div>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+  const slides = [...trilho.children];
+
+  $("indicadores").innerHTML = imoveis.map((im, i) =>
+    `<li class="grupo" data-grupo="${i}">${im.fotos.map((_, f) => {
+      const n = fotos.findIndex((x) => x.imovel === i && x.foto === f);
+      return `<button class="ponto" data-n="${n}" aria-label="Imóvel ${i + 1}, foto ${f + 1}"></button>`;
+    }).join("")}</li>`).join("");
+  const pontos = [...document.querySelectorAll(".ponto")];
+  const grupos = [...document.querySelectorAll(".grupo")];
+
+  const irPara = (n, suave = true) => {
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    const s = slides[n];
+    trilho.scrollTo({ left: s.offsetLeft - (trilho.clientWidth - s.offsetWidth) / 2, behavior: suave ? "smooth" : "auto" });
+  };
+  $("indicadores").addEventListener("click", (e) => { const b = e.target.closest(".ponto"); if (b) irPara(+b.dataset.n); });
+  $("seta-ant").addEventListener("click", () => irPara(atual - 1));
+  $("seta-prox").addEventListener("click", () => irPara(atual + 1));
+
+  function renderImovel(i) {
+    const im = imoveis[i];
+    $("imovel").innerHTML = `
+      <p class="imovel-local">${ic("pin")}<span>${esc(im.bairro)}, ${esc(im.cidade)}</span></p>
+      <span class="contador">Venda ${i + 1} de ${imoveis.length}</span>`;
+    const resumo = im.resumo || `o imóvel em ${im.bairro}`;
+    // Sem "diasParaVender", a mensagem omite o trecho "em {dias} dias"
+    let msg = C.whatsapp.mensagemCaso.replace("{imovel}", resumo);
+    msg = tem(im.diasParaVender) ? msg.replace("{dias}", im.diasParaVender) : msg.replace(/\s*em \{dias\} dias?/, "");
+    const btn = $("btn-imovel");
+    btn.href = wa(msg);
+    btn.innerHTML = ic("wpp", "i-wpp") + esc(V.botao);
+    btn.setAttribute("aria-label", `${V.botao}: ${resumo}`);
+  }
+
+  let atual = -1, imovelAtual = -1, trocaTimer;
+  function marcar(n) {
+    if (n === atual) return;
+    atual = n;
+    pontos.forEach((p, i) => { p.classList.toggle("ativo", i === n); p.setAttribute("aria-current", i === n ? "true" : "false"); });
+    const g = fotos[n].imovel;
+    grupos.forEach((el, i) => el.classList.toggle("ativo", i === g));
+    $("seta-ant").disabled = n === 0;
+    $("seta-prox").disabled = n === slides.length - 1;
+    if (g !== imovelAtual) {
+      const primeira = imovelAtual === -1;
+      imovelAtual = g;
+      const box = $("imovel");
+      clearTimeout(trocaTimer);
+      if (primeira) { renderImovel(g); return; }
+      box.classList.add("trocando");
+      trocaTimer = setTimeout(() => { renderImovel(g); box.classList.remove("trocando"); }, 180);
+    }
+  }
+  // Detecta qual foto está no centro da tela
+  function detectar() {
+    const centro = trilho.scrollLeft + trilho.clientWidth / 2;
+    let melhor = 0, dist = Infinity;
+    slides.forEach((s, i) => {
+      const d = Math.abs(s.offsetLeft + s.offsetWidth / 2 - centro);
+      if (d < dist) { dist = d; melhor = i; }
+    });
+    marcar(melhor);
+  }
+  trilho.addEventListener("scroll", detectar, { passive: true });
+  window.addEventListener("resize", detectar);
+  detectar();
+
+  /* ---------- 3. Avaliação gratuita ---------- */
+  const A = C.avaliacao;
+  $("rot-avaliacao").textContent = A.rotulo;
+  $("avaliacao").innerHTML = `
+    <h3>${fmt(A.titulo)}</h3>
+    <p>${fmt(A.texto)}</p>
+    <a class="btn btn-principal" href="${wa(C.whatsapp.mensagemAvaliacao)}" target="_blank" rel="noopener">${ic("wpp", "i-wpp")}${esc(A.botao)}</a>
+    ${A.passos && A.passos.length ? `
+      <p class="passos-titulo">${esc(A.tituloPassos)}</p>
+      <ol class="passos">${A.passos.map((p, i) => `
+        <li class="passo"><span class="passo-ic">${ic(p.icone)}<b aria-hidden="true">${i + 1}</b></span><strong>${esc(p.titulo)}</strong></li>`).join("")}
+      </ol>` : ""}`;
+
+  /* ---------- 4. Material gratuito ---------- */
+  const M = C.material;
+  $("rot-material").textContent = M.rotulo;
+  $("material").innerHTML = `
+    <div class="material-cab">
+      <div>
+        ${M.selo ? `<span class="selo">${ic("documento")}${esc(M.selo)}</span>` : ""}
+        <h3>${fmt(M.titulo)}</h3>
+      </div>
+      ${M.miniatura
+        ? `<div class="miniatura"><img src="${esc(M.miniatura)}" alt="Prévia do guia" width="300" height="424" loading="lazy" decoding="async"></div>`
+        : `<div class="icone-box">${ic("documento")}</div>`}
+    </div>
+    <p>${fmt(M.texto)}</p>
+    <a class="btn btn-material" href="${wa(C.whatsapp.mensagemGuia)}" target="_blank" rel="noopener">${ic("wpp", "i-wpp")}${esc(M.botao)}</a>`;
+
+  /* ---------- 5. Por que vender comigo ---------- */
+  const S = C.sobre;
+  $("rot-sobre").textContent = S.rotulo;
+  $("sobre").innerHTML = `
+    <div class="sobre-topo${S.foto ? "" : " sem-foto"}">
+      ${S.foto ? `<div class="sobre-foto"><img src="${esc(S.foto)}" alt="Foto de ${esc(k.nome)}" width="480" height="600" loading="lazy" decoding="async"></div>` : ""}
+      <div class="sobre-info">
+        <h3>${fmt(S.titulo)}</h3>
+        <p class="sobre-nome">${esc(k.nome)}</p>
+        <span class="sobre-creci">${ic("escudo")}CRECI ${esc(k.creci)}</span>
+      </div>
+    </div>
+    <p>${fmt(S.texto)}</p>
+    <div class="numeros">${S.numeros.map((n) => `
+      <div class="numero"><strong data-valor="${+n.valor}" data-pre="${esc(n.prefixo)}" data-suf="${esc(n.sufixo)}">${esc(n.prefixo)}${(+n.valor).toLocaleString("pt-BR")}${esc(n.sufixo)}</strong><span>${esc(n.rotulo)}</span></div>`).join("")}
+    </div>`;
+  const reduz = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if ("IntersectionObserver" in window && !reduz) {
+    const els = document.querySelectorAll("[data-valor]");
+    const io = new IntersectionObserver((ents) => ents.forEach((en) => {
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      const el = en.target, fim = +el.dataset.valor, t0 = performance.now(), dur = 1100;
+      const passo = (agora) => {
+        const p = Math.min(1, (agora - t0) / dur), v = Math.round(fim * (1 - Math.pow(1 - p, 3)));
+        el.textContent = el.dataset.pre + v.toLocaleString("pt-BR") + el.dataset.suf;
+        if (p < 1) requestAnimationFrame(passo);
+      };
+      requestAnimationFrame(passo);
+    }), { threshold: .6 });
+    els.forEach((el) => io.observe(el));
+  }
+
+  /* ---------- 6. Depoimentos ---------- */
+  const D = C.depoimentos;
+  $("rot-depo").textContent = D.rotulo;
+  $("depoimentos").innerHTML = D.lista.map((d) => `
+    <figure class="cartao depo" style="margin:0">
+      <div class="estrelas" aria-label="5 estrelas">${ic("estrela").repeat(5)}</div>
+      <blockquote>“${esc(d.texto)}”</blockquote>
+      <figcaption class="depo-autor">
+        <img src="${esc(d.foto)}" alt="" width="40" height="40" loading="lazy" decoding="async">
+        <div><strong>${esc(d.nome)}</strong><span>${esc(d.detalhe)}</span></div>
+      </figcaption>
+    </figure>`).join("");
+
+  /* ---------- 7. Redes (só as preenchidas) ---------- */
+  const R = C.redes;
+  const redes = [
+    ["whatsapp", "WhatsApp", R.whatsapp && wa(C.whatsapp.mensagemGeral)],
+    ["instagram", "Instagram", R.instagram],
+    ["youtube", "YouTube", R.youtube],
+    ["tiktok", "TikTok", R.tiktok],
+    ["linkedin", "LinkedIn", R.linkedin],
+    ["email", "E-mail", R.email && "mailto:" + R.email],
+    ["telefone", "Ligar agora", R.telefone && "tel:" + String(R.telefone).replace(/[^\d+]/g, "")]
+  ].filter(([, , url]) => url && String(url).trim());
+  if (redes.length) {
+    $("redes").innerHTML = redes.map(([n, rot, url]) => {
+      const externo = /^https?:/.test(url);
+      return `<li><a href="${esc(url)}" aria-label="${rot}" title="${rot}"${externo ? ' target="_blank" rel="noopener"' : ""}>${ic(n === "whatsapp" ? "wpp" : n)}</a></li>`;
+    }).join("");
+  } else {
+    $("sec-redes").remove();
+  }
+
+  /* ---------- 8. Rodapé ---------- */
+  $("rodape").innerHTML = `
+    <p class="rod-nome">${esc(k.nome)}</p>
+    <p>${esc(k.cargo)} · <span class="rod-creci">CRECI ${esc(k.creci)}</span></p>
+    <p><a href="#privacidade">Política de Privacidade</a></p>
+    <p class="aviso">${esc(C.rodape.aviso)}</p>`;
+
+  /* ---------- Política de Privacidade ---------- */
+  const contato = [R.email && `e-mail <strong>${esc(R.email)}</strong>`, `WhatsApp <strong>+${esc(String(C.whatsapp.numero).replace(/\D/g, ""))}</strong>`].filter(Boolean).join(" ou ");
+  $("pp-corpo").innerHTML = `
+    <p><small>Última atualização: ${esc(C.privacidade.atualizadaEm)}</small></p>
+    <h3>Quem é o responsável</h3>
+    <p>${esc(k.nome)}, ${esc(k.cargo.toLowerCase())}, CRECI ${esc(k.creci)}, atuando em ${esc(k.cidade)}. Contato: ${contato}.</p>
+    <h3>Quais dados esta página coleta</h3>
+    <p>Nenhum diretamente. Esta página não tem formulários, cadastro nem área de login.</p>
+    <h3>Quando você entra em contato</h3>
+    <p>Ao tocar em um botão de WhatsApp, e-mail ou ligação, você inicia a conversa por iniciativa própria. Como proprietário, você pode compartilhar dados pessoais (nome, telefone, e-mail) e dados do imóvel (endereço, características, fotos, documentos e valor pretendido). Essas informações são usadas apenas para:</p>
+    <ul>
+      <li>responder ao seu contato e enviar o material solicitado;</li>
+      <li>fazer a avaliação do imóvel e sugerir um preço de venda;</li>
+      <li>preparar e divulgar o anúncio, somente se você contratar o serviço e autorizar;</li>
+      <li>organizar visitas e conduzir a negociação e a documentação da venda.</li>
+    </ul>
+    <h3>Divulgação do seu imóvel</h3>
+    <p>Fotos, descrição e valor do imóvel só são publicados com a sua autorização. O endereço exato e seus dados pessoais não são divulgados em anúncios.</p>
+    <h3>Imóveis vendidos exibidos nesta página</h3>
+    <p>Os casos de imóveis vendidos são publicados com autorização dos respectivos proprietários. O preço de venda só aparece quando o proprietário autorizou.</p>
+    <h3>Compartilhamento</h3>
+    <p>Seus dados não são vendidos nem cedidos para terceiros. Durante uma negociação, poderão ser compartilhados somente o necessário com as partes envolvidas (compradores interessados, imobiliária parceira, cartório, advogados ou banco), com seu conhecimento.</p>
+    <h3>Por quanto tempo os dados são guardados</h3>
+    <p>Pelo tempo necessário para o atendimento e para cumprir obrigações legais e regulatórias da profissão de corretor de imóveis. Depois disso, são excluídos.</p>
+    <h3>Serviços de terceiros</h3>
+    <p>A hospedagem desta página e os serviços que entregam fontes e imagens podem registrar dados técnicos, como endereço IP e tipo de navegador. WhatsApp, Instagram, YouTube, TikTok e LinkedIn seguem suas próprias políticas de privacidade.</p>
+    <h3>Cookies</h3>
+    <p>Esta página não usa cookies de rastreamento ou publicidade.</p>
+    <h3>Seus direitos (LGPD)</h3>
+    <p>Conforme a Lei nº 13.709/2018, você pode pedir a qualquer momento acesso, correção ou exclusão dos seus dados, ou retirar seu consentimento, pelos contatos acima.</p>`;
+
+  const dlg = $("privacidade");
+  const abrirPP = () => { if (location.hash === "#privacidade" && !dlg.open) dlg.showModal(); };
+  const fecharPP = () => { if (dlg.open) dlg.close(); };
+  dlg.addEventListener("close", () => { if (location.hash === "#privacidade") history.replaceState(null, "", location.pathname + location.search); });
+  $("pp-fechar").addEventListener("click", fecharPP);
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) fecharPP(); });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest('a[href="#privacidade"]')) return;
+    e.preventDefault();
+    try { history.pushState(null, "", "#privacidade"); } catch (_) {}
+    if (!dlg.open) dlg.showModal();
+  });
+  window.addEventListener("hashchange", abrirPP);
+  abrirPP(); // permite compartilhar o link direto: .../index.html#privacidade
+})();
+</script>
+</body>
+</html>

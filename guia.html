@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia: antes de colocar seu imóvel à venda</title>
+<meta name="robots" content="noindex, nofollow">
+<script>
+/* =====================================================================
+   CONFIGURAÇÃO DO GUIA — troque os dados entre [colchetes].
+   Para gerar o PDF: abra no Chrome/Edge > Ctrl+P > "Salvar como PDF"
+   (papel A4, margens "Padrão", marque "Gráficos de plano de fundo").
+   ===================================================================== */
+const GUIA = {
+  nome: "[Nome da Corretora]",
+  cargo: "Corretora de imóveis",
+  creci: "[123456-F/SP]",
+  whatsapp: "[(11) 90000-0000]",
+  instagram: "[@seuusuario]",
+  corDestaque: "#b48a32",
+  corTexto: "#1c1a16"
+};
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;600;700&display=swap">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html { background: #e9e6df; }
+  body {
+    margin: 0; color: var(--texto);
+    font: 400 9.9pt/1.36 'Inter', system-ui, sans-serif;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .folha {
+    width: 210mm; height: 297mm; margin: 24px auto; padding: 14mm 14mm 11mm;
+    background: #fff; box-shadow: 0 6px 30px rgba(0,0,0,.12);
+    display: flex; flex-direction: column;
+  }
+  @media print { html { background: #fff; } .folha { margin: 0; box-shadow: none; } }
+  @media screen and (max-width: 820px) {
+    .folha { width: auto; height: auto; margin: 0; padding: 24px 16px; box-shadow: none; }
+    .grade { grid-template-columns: 1fr !important; }
+  }
+
+  header { padding-bottom: 5mm; border-bottom: 2px solid var(--destaque); }
+  .selo { display: inline-block; padding: 2px 8px; border-radius: 4px; background: var(--destaque); color: #fff; font-size: 8pt; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  h1 { margin: 6px 0 0; font: 700 23pt/1 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .01em; }
+  .sub { margin: 4px 0 0; color: #6b665c; font-size: 10pt; }
+
+  .grade { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm 9mm; margin-top: 6mm; flex: 1; align-content: start; }
+  .bloco { break-inside: avoid; }
+  h2 { display: flex; align-items: center; gap: 7px; margin: 0 0 2mm; font: 700 13pt/1 'Barlow Condensed', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: .03em; color: var(--destaque); }
+  h2 b { display: grid; place-items: center; flex: none; width: 18px; height: 18px; border-radius: 50%; background: var(--destaque); color: #fff; font: 700 8.5pt/1 'Inter', sans-serif; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  li { position: relative; padding: 1.1mm 0 1.1mm 6.5mm; border-bottom: 1px dotted #ddd8cc; }
+  li strong { font-weight: 600; }
+  /* caixinha para marcar (documentos e preparação) */
+  .marcar li::before { content: ""; position: absolute; left: 0; top: 1.6mm; width: 3.4mm; height: 3.4mm; border: 1.3px solid #8f897c; border-radius: 2px; }
+  /* "x" para os erros */
+  .erros li::before { content: "✕"; position: absolute; left: .3mm; top: 1mm; color: #b5453a; font-weight: 700; font-size: 9pt; }
+  /* seta para o passo a passo do preço */
+  .preco li::before { content: "→"; position: absolute; left: 0; top: 1mm; color: var(--destaque); font-weight: 700; }
+
+  .dica { grid-column: 1 / -1; break-inside: avoid; padding: 3.5mm 4mm; border-radius: 6px; background: color-mix(in srgb, var(--destaque) 12%, #fff); border-left: 3px solid var(--destaque); font-size: 9.6pt; }
+
+  footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 3.5mm; border-top: 1px solid #ddd8cc; font-size: 9pt; color: #6b665c; }
+  footer strong { color: var(--texto); }
+  footer .creci { color: var(--destaque); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="folha">
+  <header>
+    <span class="selo">Guia gratuito</span>
+    <h1>O que fazer antes de colocar seu imóvel à venda</h1>
+    <p class="sub">Um roteiro rápido para vender com segurança, pelo preço certo e sem surpresas no meio do caminho.</p>
+  </header>
+
+  <div class="grade">
+    <div class="bloco marcar">
+      <h2><b>1</b>Documentos necessários</h2>
+      <ul>
+        <li><strong>Matrícula atualizada</strong> do imóvel (até 30 dias), no cartório de registro</li>
+        <li>Escritura ou contrato de compra e venda</li>
+        <li>Carnê do IPTU e <strong>certidão negativa</strong> de débitos municipais</li>
+        <li>Declaração de quitação do condomínio, assinada pelo síndico</li>
+        <li>RG, CPF e certidão de estado civil dos proprietários (e do cônjuge)</li>
+        <li>Certidões negativas dos vendedores: protestos, ações cíveis e trabalhistas</li>
+        <li>Casas: habite-se e planta aprovada; reformas regularizadas</li>
+        <li>Imóvel financiado: extrato do saldo devedor com o banco</li>
+      </ul>
+    </div>
+    <div class="bloco marcar">
+      <h2><b>2</b>Prepare o imóvel para as fotos</h2>
+      <ul>
+        <li><strong>Pequenos reparos:</strong> lâmpadas, torneiras, tomadas, rejuntes e portas</li>
+        <li>Retoque a pintura onde houver marcas, manchas ou furos</li>
+        <li>Limpeza completa, inclusive vidros, box e azulejos</li>
+        <li><strong>Menos é mais:</strong> tire o excesso de móveis, objetos e itens pessoais</li>
+        <li>Fotos de dia, com cortinas abertas e todas as luzes acesas</li>
+        <li>Camas arrumadas, bancadas livres, banheiro e cozinha impecáveis</li>
+        <li>Varanda, quintal e garagem organizados</li>
+      </ul>
+    </div>
+    <div class="bloco erros">
+      <h2><b>3</b>Erros que fazem o imóvel demorar a vender</h2>
+      <ul>
+        <li><strong>Preço acima do mercado</strong>, definido pelo valor emocional ou pelo que foi investido</li>
+        <li>Fotos escuras, tortas ou com o imóvel bagunçado</li>
+        <li>Documentação com pendência descoberta só depois da proposta</li>
+        <li>Anúncios com preços e informações diferentes em vários lugares</li>
+        <li>Dificultar visitas: horários muito restritos ou imóvel sem preparo</li>
+        <li>Recusar propostas sem fazer uma contraproposta</li>
+      </ul>
+    </div>
+    <div class="bloco preco">
+      <h2><b>4</b>Como chegar ao preço certo</h2>
+      <ul>
+        <li>Compare com imóveis <strong>vendidos</strong> na região, não só com os anunciados: preço pedido não é preço de venda</li>
+        <li>Considere metragem, andar, vagas, posição do sol, conservação e lazer do condomínio</li>
+        <li>Deixe uma margem de negociação realista, sem exagerar</li>
+        <li>Acompanhe visitas e propostas: se forem poucas em 30 a 45 dias, reavalie o preço</li>
+        <li>Peça uma <strong>avaliação profissional</strong> antes de anunciar</li>
+      </ul>
+    </div>
+    <div class="dica">
+      <strong>Quer saber quanto vale o seu imóvel?</strong> Faço uma avaliação gratuita, com base nos preços reais da sua região, sem compromisso. É só me chamar no WhatsApp.
+    </div>
+  </div>
+
+  <footer>
+    <div><strong id="c-nome"></strong> · <span id="c-cargo"></span> · <span class="creci" id="c-creci"></span></div>
+    <div id="c-contato"></div>
+  </footer>
+</div>
+<script>
+  const K = GUIA, root = document.documentElement.style;
+  root.setProperty("--destaque", K.corDestaque);
+  root.setProperty("--texto", K.corTexto);
+  document.getElementById("c-nome").textContent = K.nome;
+  document.getElementById("c-cargo").textContent = K.cargo;
+  document.getElementById("c-creci").textContent = "CRECI " + K.creci;
+  document.getElementById("c-contato").textContent = ["WhatsApp " + K.whatsapp, K.instagram].filter(Boolean).join(" · ");
+</script>
+</body>
+</html>
